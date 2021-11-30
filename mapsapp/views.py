@@ -25,7 +25,6 @@ request = {
 }
 '''
 
-# TODO - get coords
 def get_coords(location):
     poi = location
 
@@ -52,22 +51,18 @@ def get_coords(location):
 
 
 def get_distance(request):
+    # request body will be a python byte so need to decode from byte and then convert to json
     r = request.body
     str_json = r.decode('utf8')
     json_obj = json.loads(str_json)
-    print('origin', json_obj.get('origin_location'))
-    print('destination', json_obj.get('destination_location'))
 
-    origin_coords = get_coords(json_obj.get('origin_location'))
-    print('origin_coords', origin_coords)
     # TODO need to figure out why not working with address
+    # Get coordinates with get_coords funnction that was previously built out
+    origin_coords = get_coords(json_obj.get('origin_location'))
     destination_coords = get_coords(json_obj.get('destination_location'))
-    print('destination_coords', destination_coords)
 
+    # Porvide the coordinates to geopy to calucalte the distance between the two coordinate points.
     distance = geopy.distance.distance(origin_coords, destination_coords).miles
 
-    print(origin_coords)
-    print(destination_coords)
-    print('distance', distance)
-
+    # return the distance that was calculated with geopy
     return render(distance)
