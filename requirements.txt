@@ -18,3 +18,5 @@ requests==2.26.0
 sqlparse==0.4.2
 urllib3==1.26.7
 Werkzeug==2.0.2
+decouple==0.0.7
+python-decouple==3.5

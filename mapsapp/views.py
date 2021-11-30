@@ -1,16 +1,15 @@
-from typing import Dict
-
-from django.conf import settings
-from django.shortcuts import render
-from django.http import HttpResponse
-
 import json
-import requests
+
 import geopy.distance
+import requests
+from django.http import HttpResponse
+from django.shortcuts import render
+
 
 
 # from mapsapp.models import InputLocation
 # from mapsapp.models import GeoLocation
+from pyapi.pyapi import settings
 
 
 def index(request):
@@ -38,22 +37,20 @@ def get_coords(location):
             'fields': 'formatted_address,name,geometry',
             'key': settings.GOOGLE_API_KEY
         })
-    # TODO will need to know what the result looks like
-    print('apikey', settings.GOOGLE_API_KEY)
-    print('result', result.json())
     r = result.json()
     # todo handle result status 'ZERO_RESULTS' || 'OK'
+    # Will store the candidates in a dictionary.
     coordinates: dict[str, float] = {
         'lat': float((r['candidates'][0]['geometry']['location']['lat'])),
         'long': float((r['candidates'][0]['geometry']['location']['lng']))
     }
 
+    # geopy.distance requires a tuple, so changing dictionary data to tuple
     coordinates_tuple = (coordinates['lat'], coordinates['long'])
 
     return coordinates_tuple
 
 
-# TODO - get distance between two coords set
 def get_distance(request):
     r = request.body
     str_json = r.decode('utf8')
@@ -73,4 +70,4 @@ def get_distance(request):
     print(destination_coords)
     print('distance', distance)
 
-    return distance
+    return render(distance)
